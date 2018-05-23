@@ -13,11 +13,16 @@ public class Room {
     @Column
     private int roomNumber;
     @ManyToOne
-    @JoinColumn(name = "company_id", nullable = false)
     private Company company;
 
     public Room() {
 
+    }
+
+    public Room(long id, int roomNumber, Company company) {
+        this.id = id;
+        this.roomNumber = roomNumber;
+        this.company = company;
     }
 
     public long getId() {

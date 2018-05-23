@@ -18,13 +18,14 @@ public class Company {
     private Time openTime;
     @Column
     private Time closeTime;
-    @OneToMany
+    /*@OneToMany
     @JoinTable(name = "company_room", joinColumns
             = @JoinColumn(name = "company_id",
             referencedColumnName = "id"),
             inverseJoinColumns = @JoinColumn(name = "room_id",
                     referencedColumnName = "id"))
     private Set<Room> rooms;
+    */
 
     public Company() {
 
@@ -58,13 +59,14 @@ public class Company {
         this.closeTime = closeTime;
     }
 
-    public Set<Room> getRooms() {
+    /*public Set<Room> getRooms() {
         return rooms;
     }
 
     public void setRooms(Set<Room> rooms) {
         this.rooms = rooms;
     }
+    */
 
     @Override
     public boolean equals(Object o) {
@@ -76,13 +78,12 @@ public class Company {
         if (id != company.id) return false;
         if (companyName != null ? !companyName.equals(company.companyName) : company.companyName != null) return false;
         if (openTime != null ? !openTime.equals(company.openTime) : company.openTime != null) return false;
-        if (closeTime != null ? !closeTime.equals(company.closeTime) : company.closeTime != null) return false;
-        return rooms != null ? rooms.equals(company.rooms) : company.rooms == null;
+        return closeTime != null ? closeTime.equals(company.closeTime) : company.closeTime == null;
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, companyName, openTime, closeTime, rooms);
+        return Objects.hash(id, companyName, openTime, closeTime);
     }
 
     @Override
@@ -92,7 +93,6 @@ public class Company {
                 ", companyName='" + companyName + '\'' +
                 ", openTime=" + openTime +
                 ", closeTime=" + closeTime +
-                ", rooms=" + rooms +
                 '}';
     }
 }
