@@ -2,6 +2,7 @@ package by.playgendary.bertosh.repositories.implementations;
 
 import by.playgendary.bertosh.entities.Company;
 import by.playgendary.bertosh.exceptions.DatabaseException;
+import by.playgendary.bertosh.exceptions.EntityNotFoundException;
 import by.playgendary.bertosh.repositories.GenericDao;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -62,9 +63,16 @@ public class CompanyDao implements GenericDao<Company, Long>{
     }
 
     @Override
-    public Company findById(Long id) {
+    public Company findById(Long id) throws EntityNotFoundException {
         try {
-            return entityManager.find(Company.class, id);
+            Company company = entityManager.find(Company.class, id);
+            if (company == null) {
+                throw new EntityNotFoundException("Can't find company with id = " + id);
+            } else {
+                return company;
+            }
+        } catch (EntityNotFoundException e) {
+            throw new EntityNotFoundException(e.getMessage());
         } catch (Exception e) {
             logger.error(e.getMessage());
             throw new DatabaseException("Exception while finding company with id = " + id);

@@ -2,6 +2,7 @@ package by.playgendary.bertosh.repositories.implementations;
 
 import by.playgendary.bertosh.entities.User;
 import by.playgendary.bertosh.exceptions.DatabaseException;
+import by.playgendary.bertosh.exceptions.EntityNotFoundException;
 import by.playgendary.bertosh.repositories.GenericDao;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -56,7 +57,14 @@ public class UserDao implements GenericDao<User, Long> {
     @Override
     public List<User> findAll() {
         try {
-            return entityManager.createQuery("from User c").getResultList();
+            List<User> userList = entityManager.createQuery("from User c").getResultList();
+            if (userList != null) {
+                return userList;
+            } else {
+                throw new EntityNotFoundException("Can't find any users");
+            }
+        } catch (EntityNotFoundException e) {
+            throw new EntityNotFoundException(e.getMessage());
         } catch (Exception e) {
             logger.error(e.getMessage());
             throw new DatabaseException("Exception while getting list of all users");
@@ -66,7 +74,14 @@ public class UserDao implements GenericDao<User, Long> {
     @Override
     public User findById(Long id) {
         try {
-            return entityManager.find(User.class, id);
+            User user =  entityManager.find(User.class, id);
+            if (user != null) {
+                return user;
+            } else {
+                throw new EntityNotFoundException("Can't find user with id = " + id);
+            }
+        } catch (EntityNotFoundException e) {
+            throw new EntityNotFoundException(e.getMessage());
         } catch (Exception e) {
             logger.error(e.getMessage());
             throw new DatabaseException("Exception while getting user with id = " + id);
@@ -75,9 +90,16 @@ public class UserDao implements GenericDao<User, Long> {
 
     public User findByEmail(String email) {
         try {
-            return (User)entityManager.createQuery("select u from User u where u.email=:email")
+            User user =  (User)entityManager.createQuery("select u from User u where u.email=:email")
                     .setParameter("email", email)
                     .getResultList();
+            if (user != null) {
+                return user;
+            } else {
+                throw new EntityNotFoundException("Can't find user with email = " + email);
+            }
+        } catch (EntityNotFoundException e) {
+            throw new EntityNotFoundException(e.getMessage());
         } catch (Exception e) {
             logger.error(e.getMessage());
             throw new DatabaseException("Exception while getting user with email = " + email);

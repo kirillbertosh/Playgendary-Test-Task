@@ -2,6 +2,7 @@ package by.playgendary.bertosh.repositories.implementations;
 
 import by.playgendary.bertosh.entities.Booking;
 import by.playgendary.bertosh.exceptions.DatabaseException;
+import by.playgendary.bertosh.exceptions.EntityNotFoundException;
 import by.playgendary.bertosh.repositories.GenericDao;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -53,7 +54,14 @@ public class BookingDao implements GenericDao<Booking, Long> {
     @Override
     public List<Booking> findAll() {
         try {
-            return entityManager.createQuery("from Booking b").getResultList();
+            List<Booking> bookingList = entityManager.createQuery("from Booking b").getResultList();
+            if (bookingList != null) {
+                return bookingList;
+            } else {
+                throw new EntityNotFoundException("Can't find any bookings");
+            }
+        } catch (EntityNotFoundException e) {
+            throw new EntityNotFoundException(e.getMessage());
         } catch (Exception e) {
             logger.error(e.getMessage());
             throw new DatabaseException("Exception while creating lost of all bookings");
@@ -63,7 +71,14 @@ public class BookingDao implements GenericDao<Booking, Long> {
     @Override
     public Booking findById(Long id) {
         try {
-            return entityManager.find(Booking.class, id);
+            Booking booking = entityManager.find(Booking.class, id);
+            if (booking != null) {
+                return booking;
+            } else {
+                throw new EntityNotFoundException("Can't find booking with id = " + id);
+            }
+        } catch (EntityNotFoundException e) {
+            throw new EntityNotFoundException(e.getMessage());
         } catch (Exception e) {
             logger.error(e.getMessage());
             throw new DatabaseException("Exception while finding booking with id = " + id);
