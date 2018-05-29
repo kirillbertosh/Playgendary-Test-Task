@@ -21,7 +21,7 @@ public class RoomDao implements GenericDao<Room, Long> {
     private final static Logger logger = LogManager.getLogger(RoomDao.class);
 
     @Override
-    public Room save(Room room) {
+    public Room save(Room room) throws DatabaseException {
         try {
             entityManager.persist(room);
             return room;
@@ -32,7 +32,7 @@ public class RoomDao implements GenericDao<Room, Long> {
     }
 
     @Override
-    public Room update(Room room) {
+    public Room update(Room room) throws DatabaseException {
         try {
             return entityManager.merge(room);
         } catch (Exception e) {
@@ -42,7 +42,7 @@ public class RoomDao implements GenericDao<Room, Long> {
     }
 
     @Override
-    public void delete(Room room) {
+    public void delete(Room room) throws DatabaseException {
         try {
             entityManager.remove(room);
         } catch (Exception e) {
@@ -52,7 +52,7 @@ public class RoomDao implements GenericDao<Room, Long> {
     }
 
     @Override
-    public List<Room> findAll() {
+    public List<Room> findAll() throws EntityNotFoundException, DatabaseException {
         try {
             List<Room> rooms = entityManager.createQuery("from Room r").getResultList();
             if (rooms != null) {
@@ -61,7 +61,7 @@ public class RoomDao implements GenericDao<Room, Long> {
                 throw new EntityNotFoundException("Can't find any rooms");
             }
         } catch (EntityNotFoundException e) {
-            throw new EntityNotFoundException(e.getMessage());
+            throw e;
         } catch (Exception e) {
             logger.error(e.getMessage());
             throw new DatabaseException("Exception while creating lost of all rooms");
@@ -69,7 +69,7 @@ public class RoomDao implements GenericDao<Room, Long> {
     }
 
     @Override
-    public Room findById(Long id) {
+    public Room findById(Long id) throws EntityNotFoundException, DatabaseException {
         try {
             Room room = entityManager.find(Room.class, id);
             if (room != null) {
@@ -78,14 +78,14 @@ public class RoomDao implements GenericDao<Room, Long> {
                 throw new EntityNotFoundException("Can't find room with id = " + id);
             }
         } catch (EntityNotFoundException e) {
-            throw new EntityNotFoundException(e.getMessage());
+            throw e;
         } catch (Exception e) {
             logger.error(e.getMessage());
             throw new DatabaseException("Exception while finding room with id = " + id);
         }
     }
 
-    public Room findByNumber(Integer roomNumber) {
+    public Room findByNumber(Integer roomNumber) throws EntityNotFoundException, DatabaseException {
         try {
             Room room = (Room)entityManager.createQuery("select r from Room r where r.roomNumber=:roomNumber")
                     .setParameter("roomNumber", roomNumber)
@@ -97,7 +97,7 @@ public class RoomDao implements GenericDao<Room, Long> {
                 throw new EntityNotFoundException("Can't find room with number = " + roomNumber);
             }
         } catch (EntityNotFoundException e) {
-            throw new EntityNotFoundException(e.getMessage());
+            throw e;
         } catch (Exception e) {
             logger.error(e.getMessage());
             throw new DatabaseException("Exception while finding room with number = " + roomNumber.toString());

@@ -22,7 +22,7 @@ public class CompanyDao implements GenericDao<Company, Long>{
 
 
     @Override
-    public Company save(Company company) {
+    public Company save(Company company) throws DatabaseException {
         try {
             entityManager.persist(company);
             return company;
@@ -33,7 +33,7 @@ public class CompanyDao implements GenericDao<Company, Long>{
     }
 
     @Override
-    public Company update(Company company) {
+    public Company update(Company company) throws DatabaseException {
         try {
             return entityManager.merge(company);
         } catch (Exception e) {
@@ -43,7 +43,7 @@ public class CompanyDao implements GenericDao<Company, Long>{
     }
 
     @Override
-    public void delete(Company company) {
+    public void delete(Company company) throws DatabaseException {
         try {
             entityManager.remove(company);
         } catch (Exception e) {
@@ -53,7 +53,7 @@ public class CompanyDao implements GenericDao<Company, Long>{
     }
 
     @Override
-    public List<Company> findAll() {
+    public List<Company> findAll() throws DatabaseException {
         try {
             return entityManager.createQuery("from Company c").getResultList();
         } catch (Exception e) {
@@ -63,7 +63,7 @@ public class CompanyDao implements GenericDao<Company, Long>{
     }
 
     @Override
-    public Company findById(Long id) throws EntityNotFoundException {
+    public Company findById(Long id) throws EntityNotFoundException, DatabaseException {
         try {
             Company company = entityManager.find(Company.class, id);
             if (company == null) {
@@ -72,7 +72,7 @@ public class CompanyDao implements GenericDao<Company, Long>{
                 return company;
             }
         } catch (EntityNotFoundException e) {
-            throw new EntityNotFoundException(e.getMessage());
+            throw e;
         } catch (Exception e) {
             logger.error(e.getMessage());
             throw new DatabaseException("Exception while finding company with id = " + id);

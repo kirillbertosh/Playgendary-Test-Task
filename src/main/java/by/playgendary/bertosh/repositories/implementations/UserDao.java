@@ -24,7 +24,7 @@ public class UserDao implements GenericDao<User, Long> {
     }
 
     @Override
-    public User save(User user) {
+    public User save(User user) throws DatabaseException {
         try {
             entityManager.persist(user);
             return user;
@@ -35,7 +35,7 @@ public class UserDao implements GenericDao<User, Long> {
     }
 
     @Override
-    public User update(User user) {
+    public User update(User user) throws DatabaseException {
         try {
             return entityManager.merge(user);
         } catch (Exception e) {
@@ -45,7 +45,7 @@ public class UserDao implements GenericDao<User, Long> {
     }
 
     @Override
-    public void  delete(User user) {
+    public void  delete(User user) throws DatabaseException {
         try {
             entityManager.remove(user);
         } catch (Exception e) {
@@ -55,7 +55,7 @@ public class UserDao implements GenericDao<User, Long> {
     }
 
     @Override
-    public List<User> findAll() {
+    public List<User> findAll() throws EntityNotFoundException, DatabaseException {
         try {
             List<User> userList = entityManager.createQuery("from User c").getResultList();
             if (userList != null) {
@@ -64,7 +64,7 @@ public class UserDao implements GenericDao<User, Long> {
                 throw new EntityNotFoundException("Can't find any users");
             }
         } catch (EntityNotFoundException e) {
-            throw new EntityNotFoundException(e.getMessage());
+            throw e;
         } catch (Exception e) {
             logger.error(e.getMessage());
             throw new DatabaseException("Exception while getting list of all users");
@@ -72,7 +72,7 @@ public class UserDao implements GenericDao<User, Long> {
     }
 
     @Override
-    public User findById(Long id) {
+    public User findById(Long id) throws EntityNotFoundException, DatabaseException {
         try {
             User user =  entityManager.find(User.class, id);
             if (user != null) {
@@ -81,14 +81,14 @@ public class UserDao implements GenericDao<User, Long> {
                 throw new EntityNotFoundException("Can't find user with id = " + id);
             }
         } catch (EntityNotFoundException e) {
-            throw new EntityNotFoundException(e.getMessage());
+            throw e;
         } catch (Exception e) {
             logger.error(e.getMessage());
             throw new DatabaseException("Exception while getting user with id = " + id);
         }
     }
 
-    public User findByEmail(String email) {
+    public User findByEmail(String email) throws EntityNotFoundException, DatabaseException {
         try {
             User user =  (User)entityManager.createQuery("select u from User u where u.email=:email")
                     .setParameter("email", email)
@@ -99,7 +99,7 @@ public class UserDao implements GenericDao<User, Long> {
                 throw new EntityNotFoundException("Can't find user with email = " + email);
             }
         } catch (EntityNotFoundException e) {
-            throw new EntityNotFoundException(e.getMessage());
+            throw e;
         } catch (Exception e) {
             logger.error(e.getMessage());
             throw new DatabaseException("Exception while getting user with email = " + email);

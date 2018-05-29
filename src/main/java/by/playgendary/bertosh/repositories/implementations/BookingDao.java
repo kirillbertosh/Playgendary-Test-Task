@@ -21,7 +21,7 @@ public class BookingDao implements GenericDao<Booking, Long> {
     private final static Logger logger = LogManager.getLogger(BookingDao.class);
 
     @Override
-    public Booking save(Booking booking) {
+    public Booking save(Booking booking) throws DatabaseException {
         try {
             entityManager.persist(booking);
             return booking;
@@ -32,7 +32,7 @@ public class BookingDao implements GenericDao<Booking, Long> {
     }
 
     @Override
-    public Booking update(Booking booking) {
+    public Booking update(Booking booking) throws DatabaseException {
         try {
             return entityManager.merge(booking);
         } catch (Exception e) {
@@ -42,7 +42,7 @@ public class BookingDao implements GenericDao<Booking, Long> {
     }
 
     @Override
-    public void delete(Booking booking) {
+    public void delete(Booking booking) throws DatabaseException {
         try {
             entityManager.remove(booking);
         } catch (Exception e) {
@@ -52,7 +52,7 @@ public class BookingDao implements GenericDao<Booking, Long> {
     }
 
     @Override
-    public List<Booking> findAll() {
+    public List<Booking> findAll() throws EntityNotFoundException, DatabaseException {
         try {
             List<Booking> bookingList = entityManager.createQuery("from Booking b").getResultList();
             if (bookingList != null) {
@@ -61,7 +61,7 @@ public class BookingDao implements GenericDao<Booking, Long> {
                 throw new EntityNotFoundException("Can't find any bookings");
             }
         } catch (EntityNotFoundException e) {
-            throw new EntityNotFoundException(e.getMessage());
+            throw e;
         } catch (Exception e) {
             logger.error(e.getMessage());
             throw new DatabaseException("Exception while creating lost of all bookings");
@@ -69,7 +69,7 @@ public class BookingDao implements GenericDao<Booking, Long> {
     }
 
     @Override
-    public Booking findById(Long id) {
+    public Booking findById(Long id) throws EntityNotFoundException, DatabaseException {
         try {
             Booking booking = entityManager.find(Booking.class, id);
             if (booking != null) {
@@ -78,7 +78,7 @@ public class BookingDao implements GenericDao<Booking, Long> {
                 throw new EntityNotFoundException("Can't find booking with id = " + id);
             }
         } catch (EntityNotFoundException e) {
-            throw new EntityNotFoundException(e.getMessage());
+            throw e;
         } catch (Exception e) {
             logger.error(e.getMessage());
             throw new DatabaseException("Exception while finding booking with id = " + id);
