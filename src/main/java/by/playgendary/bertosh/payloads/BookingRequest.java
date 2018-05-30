@@ -5,7 +5,7 @@ import java.sql.Time;
 
 public class BookingRequest {
 
-    private Integer roomNumber;
+    private Long roomId;
     private Date bookingDate;
     private Time startTime;
     private Time endTime;
@@ -15,20 +15,20 @@ public class BookingRequest {
 
     }
 
-    public BookingRequest(Integer roomNumber, Date bookingDate, Time startTime, Time endTime, Long userId) {
-        this.roomNumber = roomNumber;
+    public BookingRequest(Long roomId, Date bookingDate, Time startTime, Time endTime, Long userId) {
+        this.roomId = roomId;
         this.bookingDate = bookingDate;
         this.startTime = startTime;
         this.endTime = endTime;
         this.userId = userId;
     }
 
-    public Integer getRoomNumber() {
-        return roomNumber;
+    public Long getRoomId() {
+        return roomId;
     }
 
-    public void setRoomNumber(Integer roomNumber) {
-        this.roomNumber = roomNumber;
+    public void setRoomId(Long roomId) {
+        this.roomId = roomId;
     }
 
     public Date getBookingDate() {

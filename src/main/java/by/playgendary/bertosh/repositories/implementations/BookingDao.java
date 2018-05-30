@@ -10,6 +10,7 @@ import org.springframework.stereotype.Repository;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import java.sql.Date;
 import java.util.List;
 
 @Repository
@@ -82,6 +83,17 @@ public class BookingDao implements GenericDao<Booking, Long> {
         } catch (Exception e) {
             logger.error(e.getMessage());
             throw new DatabaseException("Exception while finding booking with id = " + id);
+        }
+    }
+
+    public List<Booking> findByDate(Date bookingDate) {
+        try {
+            return entityManager.createQuery("from Booking b where b.bookingDate=:bookingDate")
+                    .setParameter("bookingDate", bookingDate)
+                    .getResultList();
+        } catch (Exception e) {
+            logger.error(e.getMessage());
+            throw new DatabaseException("Exception while finding bookings with date = " + bookingDate);
         }
     }
 }
