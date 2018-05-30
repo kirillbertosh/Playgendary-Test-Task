@@ -3,6 +3,7 @@ package by.playgendary.bertosh.services;
 import by.playgendary.bertosh.entities.Company;
 import by.playgendary.bertosh.entities.Room;
 import by.playgendary.bertosh.exceptions.EntityNotFoundException;
+import by.playgendary.bertosh.exceptions.IllegalArgumentsException;
 import by.playgendary.bertosh.exceptions.ServiceException;
 import by.playgendary.bertosh.payloads.RoomRequest;
 import by.playgendary.bertosh.repositories.implementations.CompanyDao;
@@ -30,11 +31,16 @@ public class RoomService {
     public Room save(RoomRequest roomRequest) throws EntityNotFoundException, ServiceException {
         try {
             Company company = companyDao.findById(roomRequest.getCompanyId());
-            Room room = new Room();
-            room.setCompany(company);
-            room.setRoomNumber(roomRequest.getRoomNumber());
-            return dao.save(room);
-        } catch (EntityNotFoundException e) {
+            Room checkRoom = dao.findByNumber(roomRequest.getRoomNumber(), company);
+            if (checkRoom != null && checkRoom.getCompany().getId() == roomRequest.getCompanyId()) {
+                throw new IllegalArgumentsException("Room already exist");
+            } else {
+                Room room = new Room();
+                room.setCompany(company);
+                room.setRoomNumber(roomRequest.getRoomNumber());
+                return dao.save(room);
+            }
+        } catch (IllegalArgumentsException | EntityNotFoundException e) {
             throw e;
         } catch (Exception e) {
             logger.error(e.getMessage());
@@ -95,9 +101,16 @@ public class RoomService {
         }
     }
 
-    public Room findByNumber(Integer number) throws EntityNotFoundException, ServiceException {
+    public Room findByNumber(Integer number, Long companyId) throws EntityNotFoundException, ServiceException {
         try {
-            return dao.findByNumber(number);
+            Company company = companyDao.findById(companyId);
+            Room room = dao.findByNumber(number, company);
+            if (room != null) {
+                return room;
+            } else {
+                throw new EntityNotFoundException(
+                        "Can't find room with number = " + number + "at company with id = " + companyId);
+            }
         } catch (EntityNotFoundException e) {
             throw e;
         } catch (Exception e) {

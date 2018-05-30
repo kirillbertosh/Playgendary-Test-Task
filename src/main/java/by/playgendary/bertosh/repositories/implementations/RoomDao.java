@@ -1,5 +1,6 @@
 package by.playgendary.bertosh.repositories.implementations;
 
+import by.playgendary.bertosh.entities.Company;
 import by.playgendary.bertosh.entities.Room;
 import by.playgendary.bertosh.exceptions.DatabaseException;
 import by.playgendary.bertosh.exceptions.EntityNotFoundException;
@@ -10,6 +11,7 @@ import org.springframework.stereotype.Repository;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import javax.persistence.Query;
 import java.util.List;
 
 @Repository
@@ -85,20 +87,19 @@ public class RoomDao implements GenericDao<Room, Long> {
         }
     }
 
-    public Room findByNumber(Integer roomNumber) throws EntityNotFoundException, DatabaseException {
+    public Room findByNumber(Integer roomNumber, Company company) throws DatabaseException {
         try {
-            Room room =
-                    entityManager.createQuery("select r from Room r where r.roomNumber=:roomNumber", Room.class)
+
+            List<Room> list = entityManager
+                    .createQuery("select r from Room r where r.roomNumber=:roomNumber and r.company = :company", Room.class)
                     .setParameter("roomNumber", roomNumber)
-                    .getResultList()
-                    .get(0);
-            if (room != null) {
-                return room;
+                    .setParameter("company", company)
+                    .getResultList();
+            if (list.size() != 0) {
+                return list.get(0);
             } else {
-                throw new EntityNotFoundException("Can't find room with number = " + roomNumber);
+                return null;
             }
-        } catch (EntityNotFoundException e) {
-            throw e;
         } catch (Exception e) {
             logger.error(e.getMessage());
             throw new DatabaseException("Exception while finding room with number = " + roomNumber.toString());

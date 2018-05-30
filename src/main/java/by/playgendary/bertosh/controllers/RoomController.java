@@ -46,9 +46,9 @@ public class RoomController {
         return new ResponseEntity<>(roomList, HttpStatus.OK);
     }
 
-    @GetMapping("/number/{number}")
-    public ResponseEntity findByNumber(@PathVariable Integer number) {
-        Room room = service.findByNumber(number);
+    @GetMapping("/number/{number}/company/{companyId}")
+    public ResponseEntity findByNumber(@PathVariable Integer number, @PathVariable Long companyId) {
+        Room room = service.findByNumber(number, companyId);
         return new ResponseEntity<>(room, HttpStatus.OK);
     }
 }
