@@ -37,22 +37,26 @@ public class BookingValidator {
         if (!isTimeIntervalBelongsToCompanyWorkTime(roomId, startTime, endTime)) {
             return false;
         }
+
         List<Booking> bookingList = bookingDao.findByDate(bookingDate);
         if (bookingList == null) {
             return true;
         }
+
         bookingList.removeIf(b -> b.getRoom().getId() != roomId);
         if (bookingList.size() == 0) {
             return true;
         }
         bookingList.removeIf(
-                b -> !(startTime.compareTo(b.getStartTime()) >= 0  && startTime.compareTo(b.getEndTime()) <= 0));
-        bookingList.removeIf(
-                b -> !(endTime.compareTo(b.getEndTime()) >= 0 && endTime.compareTo(b.getEndTime()) <= 0));
+                b -> !((startTime.compareTo(b.getStartTime()) >= 0  && startTime.compareTo(b.getEndTime()) <= 0)
+                        || (endTime.compareTo(b.getStartTime()) >= 0 && endTime.compareTo(b.getEndTime()) <= 0)
+                        || !(startTime.compareTo(b.getStartTime()) < 0 && endTime.compareTo(b.getEndTime()) > 0))
+
+        );
         if (bookingList.size() == 0) {
             return true;
         } else {
-            throw new IllegalArgumentsException("Room for this time and date booked");
+            throw new IllegalArgumentsException("Room for this time and date is booked");
         }
     }
 
