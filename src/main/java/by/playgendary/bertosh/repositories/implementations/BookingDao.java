@@ -55,7 +55,7 @@ public class BookingDao implements GenericDao<Booking, Long> {
     @Override
     public List<Booking> findAll() throws EntityNotFoundException, DatabaseException {
         try {
-            List<Booking> bookingList = entityManager.createQuery("from Booking b").getResultList();
+            List<Booking> bookingList = entityManager.createQuery("from Booking b", Booking.class).getResultList();
             if (bookingList != null) {
                 return bookingList;
             } else {
@@ -88,7 +88,7 @@ public class BookingDao implements GenericDao<Booking, Long> {
 
     public List<Booking> findByDate(Date bookingDate) {
         try {
-            return entityManager.createQuery("from Booking b where b.bookingDate=:bookingDate")
+            return entityManager.createQuery("from Booking b where b.bookingDate=:bookingDate", Booking.class)
                     .setParameter("bookingDate", bookingDate)
                     .getResultList();
         } catch (Exception e) {
