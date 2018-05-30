@@ -88,19 +88,16 @@ public class UserDao implements GenericDao<User, Long> {
         }
     }
 
-    public User findByEmail(String email) throws EntityNotFoundException, DatabaseException {
+    public User findByEmail(String email) throws DatabaseException {
         try {
-            User user =  entityManager.createQuery("select u from User u where u.email=:email", User.class)
+            List list = entityManager.createQuery("select u from User u where u.email = :email")
                     .setParameter("email", email)
-                    .getResultList()
-                    .get(0);
-            if (user != null) {
-                return user;
+                    .getResultList();
+            if (list.size() == 0) {
+                return null;
             } else {
-                throw new EntityNotFoundException("Can't find user with email = " + email);
+                return (User)list.get(0);
             }
-        } catch (EntityNotFoundException e) {
-            throw e;
         } catch (Exception e) {
             logger.error(e.getMessage());
             throw new DatabaseException("Exception while getting user with email = " + email);

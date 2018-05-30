@@ -106,7 +106,12 @@ public class UserService {
 
     public User findByEmail(String email) throws EntityNotFoundException, ServiceException {
         try {
-            return dao.findByEmail(email);
+            User user = dao.findByEmail(email);
+            if (user != null) {
+                return user;
+            } else {
+                throw new EntityNotFoundException("Can't find user with email = " + email);
+            }
         } catch (EntityNotFoundException e) {
             throw e;
         } catch (Exception e) {
