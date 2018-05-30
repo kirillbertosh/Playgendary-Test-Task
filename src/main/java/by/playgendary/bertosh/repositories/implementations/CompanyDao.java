@@ -55,7 +55,7 @@ public class CompanyDao implements GenericDao<Company, Long>{
     @Override
     public List<Company> findAll() throws DatabaseException {
         try {
-            return entityManager.createQuery("from Company c").getResultList();
+            return entityManager.createQuery("from Company c", Company.class).getResultList();
         } catch (Exception e) {
             logger.error(e.getMessage());
             throw new DatabaseException("Exception while creating list of all companies");

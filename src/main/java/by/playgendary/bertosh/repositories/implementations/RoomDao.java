@@ -54,7 +54,7 @@ public class RoomDao implements GenericDao<Room, Long> {
     @Override
     public List<Room> findAll() throws EntityNotFoundException, DatabaseException {
         try {
-            List<Room> rooms = entityManager.createQuery("from Room r").getResultList();
+            List<Room> rooms = entityManager.createQuery("from Room r", Room.class).getResultList();
             if (rooms != null) {
                 return rooms;
             } else {
@@ -87,7 +87,8 @@ public class RoomDao implements GenericDao<Room, Long> {
 
     public Room findByNumber(Integer roomNumber) throws EntityNotFoundException, DatabaseException {
         try {
-            Room room = (Room)entityManager.createQuery("select r from Room r where r.roomNumber=:roomNumber")
+            Room room =
+                    entityManager.createQuery("select r from Room r where r.roomNumber=:roomNumber", Room.class)
                     .setParameter("roomNumber", roomNumber)
                     .getResultList()
                     .get(0);
