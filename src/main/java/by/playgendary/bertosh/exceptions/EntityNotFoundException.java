@@ -1,6 +1,6 @@
 package by.playgendary.bertosh.exceptions;
 
-public class EntityNotFoundException extends Exception {
+public class EntityNotFoundException extends RuntimeException {
 
     public EntityNotFoundException(String exception) {
         super(exception);

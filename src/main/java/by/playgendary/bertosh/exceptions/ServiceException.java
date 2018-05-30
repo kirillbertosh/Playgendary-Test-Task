@@ -1,6 +1,6 @@
 package by.playgendary.bertosh.exceptions;
 
-public class ServiceException extends Exception {
+public class ServiceException extends RuntimeException {
 
     public ServiceException(String message) {
         super(message);
