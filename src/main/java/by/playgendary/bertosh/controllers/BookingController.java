@@ -46,9 +46,15 @@ public class BookingController {
         return new ResponseEntity<>(bookingList, HttpStatus.OK);
     }
 
-    @GetMapping("user/{userId}")
+    @GetMapping("/user/{userId}")
     public ResponseEntity findUserBookings(@PathVariable Long userId) {
         List<Booking> userBookings = service.findUserBookings(userId);
+        return new ResponseEntity<>(userBookings, HttpStatus.OK);
+    }
+
+    @GetMapping("/user/last_month/{userId}")
+    public ResponseEntity findLastMonthUserBookings(@PathVariable Long userId) {
+        List<Booking> userBookings = service.findLastMonthUserBookings(userId);
         return new ResponseEntity<>(userBookings, HttpStatus.OK);
     }
 }

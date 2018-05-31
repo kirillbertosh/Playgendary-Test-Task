@@ -18,6 +18,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.sql.Date;
+import java.time.LocalDate;
+import java.util.Calendar;
 import java.util.List;
 import java.util.Objects;
 
@@ -137,6 +140,19 @@ public class BookingService {
         } catch (Exception e) {
             logger.error(e.getMessage());
             throw new ServiceException("Exception in creating user's booking list transaction");
+        }
+    }
+
+    public List<Booking> findLastMonthUserBookings(Long userId) {
+        try {
+            List<Booking> bookingList = findUserBookings(userId);
+            bookingList.removeIf(b -> !(LocalDate.now().minusMonths(1).compareTo(b.getBookingDate().toLocalDate()) <= 0));
+            return bookingList;
+        } catch (EntityNotFoundException e) {
+            throw e;
+        } catch (Exception e) {
+            logger.error(e.getMessage());
+            throw new ServiceException("Exception in creating user's last month booking list transaction");
         }
     }
 }
