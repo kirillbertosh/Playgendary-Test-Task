@@ -122,9 +122,8 @@ public class BookingServiceTest {
     @Test
     @Transactional
     public void testUpdate() {
-        Booking booking = service.findById(bookingId);
-        booking.setBookingDate(Date.valueOf("2018-06-02"));
-        booking = service.update(bookingId, booking);
+        request.setBookingDate(Date.valueOf("2018-06-02"));
+        booking = service.update(bookingId, request);
         assertNotNull(booking);
         assertTrue(booking.getId() == bookingId);
     }

@@ -48,7 +48,7 @@ public class UserService {
         }
     }
 
-    public User update(Long id, User updateUser) throws EntityNotFoundException, ServiceException {
+    public User update(Long id, UserRequest updateUser) throws EntityNotFoundException, ServiceException {
         try {
             User user = dao.findById(id);
             if (updateUser.getEmail() != null) {
@@ -59,6 +59,9 @@ public class UserService {
             }
             if (updateUser.getLastName() != null) {
                 user.setLastName(updateUser.getLastName());
+            }
+            if (updateUser.getCompanyId() != null) {
+                user.setCompany(companyDao.findById(updateUser.getCompanyId()));
             }
             return dao.update(user);
         } catch (EntityNotFoundException e) {
@@ -114,17 +117,6 @@ public class UserService {
             }
         } catch (EntityNotFoundException e) {
             throw e;
-        } catch (Exception e) {
-            logger.error(e.getMessage());
-            throw new ServiceException("Exception in finding user with email = " + email + " transaction");
-        }
-    }
-
-    public boolean existByEmail(String email) throws ServiceException {
-        try {
-            return dao.findByEmail(email) != null;
-        } catch (EntityNotFoundException e) {
-            return false;
         } catch (Exception e) {
             logger.error(e.getMessage());
             throw new ServiceException("Exception in finding user with email = " + email + " transaction");

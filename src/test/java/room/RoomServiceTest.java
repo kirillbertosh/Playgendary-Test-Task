@@ -109,8 +109,8 @@ public class RoomServiceTest {
     @Test
     @Transactional
     public void testUpdate() {
-        room.setRoomNumber(updateRoomNumber);
-        room = service.update(roomId, room);
+        roomRequest.setRoomNumber(updateRoomNumber);
+        room = service.update(roomId, roomRequest);
         assertEquals(room.getRoomNumber(), updateRoomNumber);
     }
 }

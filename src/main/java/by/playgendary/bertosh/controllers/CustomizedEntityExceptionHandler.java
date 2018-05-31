@@ -33,11 +33,11 @@ public class CustomizedEntityExceptionHandler extends ResponseEntityExceptionHan
     public final ResponseEntity<ErrorDetails> handleServiceException(ServiceException ex, WebRequest request) {
         ErrorDetails errorDetails = new ErrorDetails(new Date(), ex.getMessage(),
                 request.getDescription(false));
-        return new ResponseEntity<>(errorDetails, HttpStatus.BAD_REQUEST);
+        return new ResponseEntity<>(errorDetails, HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
     @ExceptionHandler(DatabaseException.class)
-    public final ResponseEntity<ErrorDetails> handleAllExceptions(DatabaseException ex, WebRequest request) {
+    public final ResponseEntity<ErrorDetails> handleDatabaseExceptions(DatabaseException ex, WebRequest request) {
         ErrorDetails errorDetails = new ErrorDetails(new Date(), ex.getMessage(),
                 request.getDescription(false));
         return new ResponseEntity<>(errorDetails, HttpStatus.INTERNAL_SERVER_ERROR);

@@ -84,8 +84,8 @@ public class UserServiceTest {
     @Test
     @Transactional
     public void testUpdate() {
-        user.setEmail(updateUserEmail);
-        user = service.update(13L, user);
+        request.setEmail(updateUserEmail);
+        user = service.update(13L, request);
         assertEquals(user.getEmail(), updateUserEmail);
     }
 

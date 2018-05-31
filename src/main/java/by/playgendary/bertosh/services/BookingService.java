@@ -65,17 +65,17 @@ public class BookingService {
         }
     }
 
-    public Booking update(Long id, Booking updateBooking) throws EntityNotFoundException, ServiceException {
+    public Booking update(Long id, BookingRequest updateBooking) throws EntityNotFoundException, ServiceException {
         try {
             Booking booking = dao.findById(id);
-            if (updateBooking.getUser() != null) {
-                booking.setUser(updateBooking.getUser());
+            if (updateBooking.getUserId() != null) {
+                booking.setUser(userDao.findById(updateBooking.getUserId()));
             }
             if (updateBooking.getBookingDate() != null) {
                 booking.setBookingDate(updateBooking.getBookingDate());
             }
-            if (updateBooking.getRoom() != null) {
-                booking.setRoom(updateBooking.getRoom());
+            if (updateBooking.getRoomId() != null) {
+                booking.setRoom(roomDao.findById(updateBooking.getRoomId()));
             }
             if (updateBooking.getStartTime() != null) {
                 booking.setStartTime(updateBooking.getStartTime());
@@ -129,13 +129,9 @@ public class BookingService {
     public List<Booking> findUserBookings(Long userId) throws EntityNotFoundException, ServiceException {
         try {
             User user = userDao.findById(userId);
-            if (user != null) {
-                List<Booking> bookingList = dao.findAll();
-                bookingList.removeIf(booking -> !Objects.equals(booking.getUser(), user));
-                return bookingList;
-            } else {
-                throw new EntityNotFoundException("Can't find user with id = " + userId);
-            }
+            List<Booking> bookingList = dao.findAll();
+            bookingList.removeIf(booking -> !Objects.equals(booking.getUser(), user));
+            return bookingList;
         } catch (EntityNotFoundException e) {
             throw e;
         } catch (Exception e) {

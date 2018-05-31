@@ -48,14 +48,14 @@ public class RoomService {
         }
     }
 
-    public Room update(Long id, Room updateRoom) throws EntityNotFoundException, ServiceException {
+    public Room update(Long id, RoomRequest updateRoom) throws EntityNotFoundException, ServiceException {
         try {
             Room room = dao.findById(id);
             if (updateRoom.getRoomNumber() != 0 && updateRoom.getRoomNumber() != room.getRoomNumber()) {
                 room.setRoomNumber(updateRoom.getRoomNumber());
             }
-            if (updateRoom.getCompany() != null && !Objects.equals(room.getCompany(), updateRoom.getCompany())) {
-                room.setCompany(updateRoom.getCompany());
+            if (updateRoom.getCompanyId() != null) {
+                room.setCompany(companyDao.findById(updateRoom.getCompanyId()));
             }
             return dao.update(room);
         } catch (EntityNotFoundException e) {
