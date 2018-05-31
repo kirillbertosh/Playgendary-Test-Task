@@ -4,7 +4,6 @@ import by.playgendary.bertosh.Application;
 import by.playgendary.bertosh.entities.User;
 import by.playgendary.bertosh.exceptions.EntityNotFoundException;
 import by.playgendary.bertosh.repositories.implementations.UserDao;
-import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;

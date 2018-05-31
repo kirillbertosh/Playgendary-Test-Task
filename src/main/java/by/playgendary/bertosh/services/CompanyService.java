@@ -17,7 +17,7 @@ public class CompanyService {
     @Autowired
     private CompanyDao dao;
 
-    private final static Logger logger = LogManager.getLogger(UserService.class);
+    private final static Logger logger = LogManager.getLogger(CompanyService.class);
 
     public Company save(Company company) throws ServiceException {
         try {

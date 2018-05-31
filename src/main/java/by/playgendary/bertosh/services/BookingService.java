@@ -1,5 +1,6 @@
 package by.playgendary.bertosh.services;
 
+import by.playgendary.bertosh.email.EmailSender;
 import by.playgendary.bertosh.entities.Booking;
 import by.playgendary.bertosh.entities.Room;
 import by.playgendary.bertosh.entities.User;
@@ -32,8 +33,10 @@ public class BookingService {
     private RoomDao roomDao;
     @Autowired
     private BookingValidator bookingValidator;
+    @Autowired
+    private EmailSender emailSender;
 
-    private final static Logger logger = LogManager.getLogger(UserService.class);
+    private final static Logger logger = LogManager.getLogger(BookingService.class);
 
     public Booking save(BookingRequest bookingRequest)
             throws EntityNotFoundException, IllegalArgumentsException, ServiceException {
@@ -50,6 +53,9 @@ public class BookingService {
             booking.setBookingDate(bookingRequest.getBookingDate());
             booking.setStartTime(bookingRequest.getStartTime());
             booking.setEndTime(bookingRequest.getEndTime());
+
+            emailSender.send(user, booking);
+
             return dao.save(booking);
         } catch (IllegalArgumentsException | EntityNotFoundException e) {
             throw e;
